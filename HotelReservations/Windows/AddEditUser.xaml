@@ -15,50 +15,55 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <StackPanel
-            Grid.Row="1"
-            Grid.Column="1"
-            Orientation="Vertical"
-            >
-            <StackPanel
-                Orientation="Horizontal"
-                >
-                <Label 
-                    Height="30"
-                    Width="150"
-                    Content="User type:"/>
-                <ComboBox 
-                    Name="UserTypeCB"
-                    Height="30" 
-                    Width="150"
-                    VerticalContentAlignment="Center"
-                    />
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal">
+                <Label Height="30" Width="150" Content="User type:"/>
+                <ComboBox x:Name="UserTypesCB" Height="30" Width="150" VerticalContentAlignment="Center"/>
+
             </StackPanel>
         </StackPanel>
-        <StackPanel
-            Grid.Row="3" Grid.Column="2"
-            Orientation="Horizontal"
-            FlowDirection="RightToLeft"
-            >
-            <Button 
-                Name="SaveBtn"
-                Content="Save"
-                Width="80"
-                Height="30"
-                Margin="5,0,5,0"
-                Click="SaveBtn_Click"
-                />
-            <Button 
-                Name="CancelBtn"
-                Content="Cancel"
-                Width="80"
-                Height="30"
-                />
+
+        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+            <Label Height="30" Width="150" Content="Ime:"/>
+            <TextBox x:Name="FirstNameTB" Height="30" Width="150" VerticalContentAlignment="Center" 
+                     Text="{Binding Name}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal">
+            <Label Height="30" Width="150" Content="Prezime:"/>
+            <TextBox x:Name="LastNameTB" Height="30" Width="150" VerticalContentAlignment="Center" 
+                     Text="{Binding Surname}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+            <Label Height="30" Width="150" Content="JMBG:"/>
+            <TextBox x:Name="JMBGTB" Height="30" Width="150" VerticalContentAlignment="Center" 
+                     Text="{Binding JMBG}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Margin="0,0,0,85">
+            <Label Height="30" Width="150" Content="Username:"/>
+            <TextBox x:Name="UsernameTB" Height="30" Width="150" VerticalContentAlignment="Center" 
+                     Text="{Binding Username}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Margin="0,49,0,35">
+            <Label Height="30" Width="150" Content="Password:"/>
+            <TextBox x:Name="PasswordPB" Height="30" Width="150" VerticalContentAlignment="Center" 
+                         Text="{Binding Password}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="7" Grid.Column="2" Orientation="Horizontal" FlowDirection="RightToLeft">
+            <Button Name="SaveBtn" Content="Save" Width="80" Height="30" Margin="5,0,5,0" Click="SaveBtn_Click"/>
+            <Button Name="CancelBtn" Content="Cancel" Width="80" Height="30" Click="CancelBtn_Click"/>
         </StackPanel>
     </Grid>
 </Window>

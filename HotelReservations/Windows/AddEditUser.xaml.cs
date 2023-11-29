@@ -1,6 +1,8 @@
 ﻿using HotelReservations.Model;
+using HotelReservations.Service;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,24 +22,38 @@ namespace HotelReservations.Windows
     /// </summary>
     public partial class AddEditUser : Window
     {
+        private UserService userService;
+
+        private User contextUser;
         public AddEditUser(User user = null)
         {
+            if(user == null)
+            {
+                contextUser = new User();
+            }
+            else
+            {
+                contextUser = user.Clone();
+            }
             InitializeComponent();
+            userService = new UserService();
             AdjustWindow(user);
+
+            this.DataContext = contextUser;
         }
 
         private void AdjustWindow(User user = null)
         {
-            // TODO: Inicijalizovati combobox za selekciju tipa korisnika
-            UserTypeCB.Items.Add(typeof(Receptionist).Name);
-            UserTypeCB.Items.Add(typeof(Administrator).Name);
+            // Inicijalizujte ComboBox koristeći generičku kolekciju
+            UserTypesCB.ItemsSource = Enum.GetValues(typeof(UserType));
 
-            if(user != null)
+            if (user != null)
             {
                 Title = "Edit user";
-                
-                UserTypeCB.SelectedItem = user.GetType().Name;
-                UserTypeCB.IsEnabled = false;
+
+                // Postavite izabranu vrednost ComboBox-a na tip korisnika
+                UserTypesCB.SelectedItem = user.UserType;
+                UserTypesCB.IsEnabled = true;
             }
             else
             {
@@ -45,9 +61,18 @@ namespace HotelReservations.Windows
             }
         }
 
+
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-            var selectedUserType = UserTypeCB.SelectedItem as string;
+            userService.SaveUser(contextUser);
+
+            DialogResult = true;
+            Close();
+        }
+
+        private void CancelBtn_Click(Object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -100,6 +100,15 @@ namespace HotelReservations
                     Hotel.GetInstance().Rooms = loadedRooms;
                 }
 
+                IUserRepository userRepository = new UserRepository();
+                var loadedUsers = userRepository.Load();
+
+                if (loadedUsers != null)
+                {
+                    Hotel.GetInstance().Users = loadedUsers;
+                }
+
+
 
                 // Samo za primer...
                 //BinaryRoomRepository binaryRoomRepository = new BinaryRoomRepository();

@@ -19,7 +19,7 @@ namespace HotelReservations.Repository
     {
         private string ToCSV(Room room)
         {
-            return $"{room.Id},{room.RoomNumber},{room.HasTV},{room.HasMiniBar},{room.RoomType.Id}";
+            return $"{room.Id},{room.RoomNumber},{room.HasTV},{room.HasMiniBar},{room.RoomType.Id},{room.IsActive}";
         }
 
         private Room FromCSV(string csv)
@@ -32,6 +32,7 @@ namespace HotelReservations.Repository
             room.HasTV = bool.Parse(csvValues[2]);
             room.HasMiniBar = bool.Parse(csvValues[3]);
             var roomTypeId = int.Parse(csvValues[4]);
+            room.IsActive = bool.Parse(csvValues[5]);
             //room.RoomType = Hotel.GetInstance().RoomTypes.Find((rt) => { return rt.Id == roomTypeId; });
             room.RoomType = Hotel.GetInstance().RoomTypes.Find(rt => rt.Id == roomTypeId);
 
@@ -74,7 +75,9 @@ namespace HotelReservations.Repository
                     while ((line = streamReader.ReadLine()) != null)
                     {
                         var room = FromCSV(line);
-                        rooms.Add(room);
+
+                            rooms.Add(room);
+                        
                     }
 
                     return rooms;

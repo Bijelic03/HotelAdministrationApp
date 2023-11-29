@@ -3,6 +3,7 @@ using HotelReservations.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,17 +23,22 @@ namespace HotelReservations.Windows
     /// </summary>
     public partial class Rooms : Window
     {
+        private RoomService roomService;
+
         private ICollectionView view;
         public Rooms()
         {
             InitializeComponent();
+            roomService = new RoomService();
+
             FillData();
+
         }
 
         public void FillData()
         {
             var roomService = new RoomService();
-            var rooms = roomService.GetAllRooms();
+            var rooms = roomService.GetAllActiveRooms();
 
             view = CollectionViewSource.GetDefaultView(rooms);
             view.Filter = DoFilter;
@@ -110,11 +116,11 @@ namespace HotelReservations.Windows
             if (MessageBox.Show($"Are you sure that you want to delete room {selectedRoom!.RoomNumber}?",
                 "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                 
+                roomService.DeleteRoom(selectedRoom);
+                FillData();
             }
             else
             {
-                 
             }
         }
     }

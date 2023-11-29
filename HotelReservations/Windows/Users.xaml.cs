@@ -3,6 +3,7 @@ using HotelReservations.Service;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +37,8 @@ namespace HotelReservations.Windows
         // TODO: Korisničke lozinke ne bi trebalo prikazati
         private void FillData()
         {
-            var users = userService.GetAllUsers();
+
+            var users = userService.GetAllActiveUsers();
 
             view = CollectionViewSource.GetDefaultView(users);
 
@@ -48,7 +50,13 @@ namespace HotelReservations.Windows
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             var addUsersWindow = new AddEditUser();
-            addUsersWindow.ShowDialog();
+
+            Hide();
+            if(addUsersWindow.ShowDialog() == true)
+            {
+                FillData();
+            }
+            Show();
         }
 
         private void EditBtn_Click(object sender, RoutedEventArgs e)
@@ -59,7 +67,27 @@ namespace HotelReservations.Windows
             {
                 var editUsersWindow = new AddEditUser(selectedUser);
                 editUsersWindow.ShowDialog();
+                view.Refresh();
+
+            }
+        }
+
+        private void DeleteBtn_Click(object sender, RoutedEventArgs e)
+        {
+            if (view.CurrentItem == null) { return; }
+
+            var selectedUser = view.CurrentItem as User;
+
+            if (MessageBox.Show($"Are you sure that you want to delete user with id {selectedUser!.Id}?",
+                "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                userService.DeleteUser(selectedUser);
+                FillData();
+            }
+            else
+            {
             }
         }
     }
+
 }

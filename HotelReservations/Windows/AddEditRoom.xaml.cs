@@ -57,6 +57,9 @@ namespace HotelReservations.Windows
             // OVE PODATKE PREKO SERVISA, PLS
             var roomTypes = Hotel.GetInstance().RoomTypes;
             RoomTypesCB.ItemsSource = roomTypes;
+
+
+
         }
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)

@@ -18,6 +18,23 @@ namespace HotelReservations.Model
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public string UserType { get { return GetType().Name; } }
+        public bool IsActive { get; set; }
+        public UserType UserType { get; set; }
+        public User Clone()
+        {
+            var clone  = new User(); 
+            clone.Id = Id;
+            clone.Name = Name;
+            clone.Surname = Surname;
+            clone.JMBG = JMBG;
+            clone.Username = Username;
+            clone.Password = Password;
+            clone.UserType = UserType;
+            clone.IsActive = IsActive;
+            return clone;
+
+        }
     }
+
+
 }
