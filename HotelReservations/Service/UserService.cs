@@ -40,6 +40,7 @@ namespace HotelReservations.Service
             {
                 var index = Hotel.GetInstance().Users.FindIndex(r => r.Id == user.Id);
                 Hotel.GetInstance().Users[index] = user;
+
             }
         }
 
@@ -51,7 +52,15 @@ namespace HotelReservations.Service
 
         public int GetNextIdValue()
         {
-            return Hotel.GetInstance().Users.Max(r => r.Id) + 1;
+            if (Hotel.GetInstance().Users.Count == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return Hotel.GetInstance().Users.Max(r => r.Id) + 1;
+
+            }
         }
     }
 }

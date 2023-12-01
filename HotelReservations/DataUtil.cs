@@ -18,41 +18,13 @@ namespace HotelReservations
             hotel.Name = "Hotel Park";
             hotel.Address = "Kod Futoskog parka...";
 
-            var singleBedRoom = new RoomType()
-            {
-                Id = 1,
-                Name = "Singe Bed"
-            };
 
-            var doubleBedRoom = new RoomType()
-            {
-                Id = 2,
-                Name = "Double Bed"
-            };
 
-            var room1 = new Room()
-            {
-                Id = 1,
-                RoomNumber = "02",
-                HasTV = false,
-                HasMiniBar = true,
-                RoomType = singleBedRoom,
-            };
 
-            var room2 = new Room()
-            {
-                Id = 2,
-                RoomNumber = "01",
-                HasTV = true,
-                HasMiniBar = true,
-                RoomType = doubleBedRoom,
-            };
-
-            hotel.RoomTypes.Add(singleBedRoom);
-            hotel.RoomTypes.Add(doubleBedRoom);
-
-            hotel.Rooms.Add(room1);
-            hotel.Rooms.Add(room2);
+          //  hotel.RoomTypes.Add(singleBedRoom);
+         //   hotel.RoomTypes.Add(doubleBedRoom);
+         //  hotel.RoomTypes.Add(tripleBedRoom);
+            
 
             Receptionist receptionist1 = new Receptionist()
             {
@@ -90,6 +62,28 @@ namespace HotelReservations
             // Može kada znamo da postoji rooms.txt datoteka
             // Ona bi trebalo da se nađe u potfolderu projektnog foldera
             // PopProjekat/bin/Debug
+
+            try
+            {
+                IRoomTypeRepository roomTypeRepository = new RoomTypeRepository();
+                var loadedRoomTypes = roomTypeRepository.Load();
+
+                if (loadedRoomTypes != null)
+                {
+                    Hotel.GetInstance().RoomTypes = loadedRoomTypes;
+                }
+
+            }
+               catch (CouldntLoadResourceException)
+            {
+                Console.WriteLine("Call an administrator, something weird is happening with the files");
+            }
+            catch (Exception ex)
+            {
+                Console.Write("An unexpected error occured", ex.Message);
+            }
+
+
             try
             {
                 IRoomRepository roomRepository = new RoomRepository();
@@ -131,8 +125,12 @@ namespace HotelReservations
                 // Kada se gasi program, čuvamo u rooms.txt
                 // Posle toga će rooms.txt postojati (ako nešto ne pođe po zlu)
                 IRoomRepository roomRepository = new RoomRepository();
-                roomRepository.Save(Hotel.GetInstance().Rooms);
+                IRoomTypeRepository roomTypeRepository = new RoomTypeRepository();
+                IUserRepository userRepository = new UserRepository();
 
+                roomRepository.Save(Hotel.GetInstance().Rooms);
+                roomTypeRepository.Save(Hotel.GetInstance().RoomTypes);
+                userRepository.Save(Hotel.GetInstance().Users);
 
                 //BinaryRoomRepository binaryRoomRepository = new BinaryRoomRepository();
                 //binaryRoomRepository.Save(Hotel.GetInstance().Rooms);

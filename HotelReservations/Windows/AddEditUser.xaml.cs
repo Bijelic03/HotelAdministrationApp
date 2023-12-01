@@ -27,7 +27,7 @@ namespace HotelReservations.Windows
         private User contextUser;
         public AddEditUser(User user = null)
         {
-            if(user == null)
+            if (user == null)
             {
                 contextUser = new User();
             }
@@ -35,10 +35,12 @@ namespace HotelReservations.Windows
             {
                 contextUser = user.Clone();
             }
+
             InitializeComponent();
             userService = new UserService();
             AdjustWindow(user);
 
+            // Set DataContext here
             this.DataContext = contextUser;
         }
 

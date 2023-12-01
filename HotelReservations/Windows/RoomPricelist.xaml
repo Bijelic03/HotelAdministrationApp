@@ -13,11 +13,13 @@
         </Grid.RowDefinitions>
 
         <ToolBar Grid.Row="0">
-        
+            <Button Name="AddBtn" Content="Add" BorderBrush="LightGray" Click="AddBtn_Click"/>
+            <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0" Click="EditBtn_Click"/>
+            <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
         </ToolBar>
 
-        <DataGrid Name="RoomPricelistDG" Grid.Row="1" 
-                  IsReadOnly="True"/>
+        <DataGrid Name="RoomTypesDG" Grid.Row="2" 
+             IsReadOnly="True" AutoGeneratingColumn="RoomTypesDG_AutoGeneratingColumn"/>
 
     </Grid>
 </Window>

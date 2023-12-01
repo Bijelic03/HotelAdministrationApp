@@ -26,6 +26,11 @@
                     Header="Users"
                     Click="UsersMI_Click"
                     />
+                <MenuItem 
+                    Name="PricelistMI" 
+                    Header="Pricelist"
+                    Click="PricelistMI_Click"
+                    />
             </MenuItem>
         </Menu>
         

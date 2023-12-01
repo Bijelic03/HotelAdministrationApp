@@ -37,5 +37,11 @@ namespace HotelReservations
             var usersWindow = new Users();
             usersWindow.Show();
         }
+
+        private void PricelistMI_Click(object sender, RoutedEventArgs e)
+        {
+            var roomPricelist = new RoomPricelist();
+            roomPricelist.Show();
+        }
     }
 }

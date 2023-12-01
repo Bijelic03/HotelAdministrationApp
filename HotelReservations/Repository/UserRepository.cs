@@ -23,11 +23,12 @@ namespace HotelReservations.Repository
 
             var user = new User();
             user.Id = int.Parse(csvValues[0]);
-            user.JMBG = csvValues[1];
-            user.Username = csvValues[2];
-            user.Password = csvValues[3];
-            user.Name = csvValues[4];
-            user.Surname = csvValues[5];
+            user.Name = csvValues[1];
+            user.Surname = csvValues[2];
+            user.JMBG = csvValues[3];
+            user.Username = csvValues[4];
+            user.Password = csvValues[5];
+            user.UserType = (UserType)Enum.Parse(typeof(UserType), csvValues[6], true);
             user.IsActive = bool.Parse(csvValues[7]);
 
             try

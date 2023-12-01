@@ -67,6 +67,8 @@ namespace HotelReservations.Windows
             {
                 var editUsersWindow = new AddEditUser(selectedUser);
                 editUsersWindow.ShowDialog();
+                FillData();
+
                 view.Refresh();
 
             }
