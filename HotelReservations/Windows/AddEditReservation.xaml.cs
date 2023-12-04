@@ -69,6 +69,13 @@ namespace HotelReservations.Windows
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (contextReservation.TotalPrice <= 0)
+            {
+                MessageBox.Show("Total price must be greater than 0.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+
 
             contextReservation.Guests = SelectedGuests();
             reservationService.SaveReservation(contextReservation);
@@ -94,14 +101,14 @@ namespace HotelReservations.Windows
         {
             var selectedGuests = new List<Guest>();
 
-            foreach (var item in GuestsDG.Items)
+            foreach (var item in GuestsSelectDG.Items)
             {
                 var guest = item as Guest;
 
                 // Ako gost nije null, proveri da li je označen
                 if (guest != null)
                 {
-                    var cellContent = GuestsDG.Columns[0].GetCellContent(item);
+                    var cellContent = GuestsSelectDG.Columns[0].GetCellContent(item);
                     if (cellContent is CheckBox checkBox)
                     {
                         bool isChecked = checkBox.IsChecked ?? false;
@@ -125,18 +132,18 @@ namespace HotelReservations.Windows
         {
             var freeGuests = guestService.GetAllFreeGuests();
 
-            GuestsDG.Columns.Clear();
+            GuestsSelectDG.Columns.Clear();
 
             // Dodajte CheckBoxColumn programski
             DataGridCheckBoxColumn checkBoxColumn = new DataGridCheckBoxColumn();
             checkBoxColumn.Header = "Select";
             checkBoxColumn.Binding = new Binding("IsSelected");
 
-            GuestsDG.Columns.Add(checkBoxColumn);
+            GuestsSelectDG.Columns.Add(checkBoxColumn);
 
-            GuestsDG.ItemsSource = null;
-            GuestsDG.ItemsSource = freeGuests;
-            GuestsDG.IsSynchronizedWithCurrentItem = true;
+            GuestsSelectDG.ItemsSource = null;
+            GuestsSelectDG.ItemsSource = freeGuests;
+            GuestsSelectDG.IsSynchronizedWithCurrentItem = true;
         }
 
 

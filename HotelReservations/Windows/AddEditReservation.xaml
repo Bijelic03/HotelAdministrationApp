@@ -51,7 +51,7 @@
 
         <!-- Right side data grid -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.RowSpan="5" Grid.ColumnSpan="2" Margin="400,0,0,77">
-            <DataGrid Name="GuestsDG" Width="385" Height="246">
+            <DataGrid Name="GuestsSelectDG" Width="385" Height="246">
                 <DataGrid.Columns>
                     <!-- Kolona za CheckBox -->
                     <DataGridCheckBoxColumn x:Name="CheckBox" Header="Select" Binding="{Binding IsSelected}" />

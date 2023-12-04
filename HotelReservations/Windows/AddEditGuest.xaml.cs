@@ -4,6 +4,7 @@ using System;
 using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Security.RightsManagement;
 
 namespace HotelReservations.Windows
 {
@@ -44,8 +45,19 @@ namespace HotelReservations.Windows
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(contextGuest.Name) || string.IsNullOrEmpty(contextGuest.Surname) || string.IsNullOrEmpty(contextGuest.IDNumber))
+            {
+                MessageBox.Show("Fill required fields.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (!int.TryParse(contextGuest.IDNumber, out _))
+            {
+                MessageBox.Show("JMBG must be a valid number.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             guestService.SaveGuest(contextGuest);
+            DialogResult = true;
             Close();
         }
 

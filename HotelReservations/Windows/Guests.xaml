@@ -9,24 +9,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
-            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <ToolBar Grid.Row="0">
             <Button Name="AddBtn" Content="Add" BorderBrush="LightGray" Click="AddBtn_Click"/>
-            <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0"  Click="EditBtn_Click" />
+            <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0" Click="EditBtn_Click"/>
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
-        </ToolBar> 
+        </ToolBar>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Label Content="Guest number:" VerticalContentAlignment="Center"/>
-            <TextBox Name="GuestNameSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="GuestNameSearchTB_PreviewKeyUp"/>
-        </StackPanel>
-
-        <DataGrid Name="GuestsDG" Grid.Row="2" 
-                  IsReadOnly="True" AutoGeneratingColumn="GuestsDG_AutoGeneratingColumn"/>
-
+        <DataGrid Name="GuestsDG" Grid.Row="1" 
+                  IsReadOnly="True" />
 
     </Grid>
 </Window>

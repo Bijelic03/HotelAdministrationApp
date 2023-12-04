@@ -16,6 +16,7 @@ namespace HotelReservations.Repository
     {
         private string ToCSV(Guest guest)
         {
+            //,{guest.ReservationId}
             return $"{guest.Id},{guest.Name},{guest.Surname},{guest.IDNumber}";
         }
 
@@ -28,6 +29,7 @@ namespace HotelReservations.Repository
             guest.Name = csvValues[1];
             guest.Surname = csvValues[2];
             guest.IDNumber = csvValues[3];
+        //    guest.ReservationId = int.Parse(csvValues[4]);
 
             return guest;
         }

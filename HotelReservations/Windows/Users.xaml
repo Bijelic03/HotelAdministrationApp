@@ -19,7 +19,7 @@
         </ToolBar>
 
         <DataGrid Name="UsersDG" Grid.Row="1" 
-                  IsReadOnly="True"/>
+                  IsReadOnly="True" AutoGeneratingColumn="UsersDG_AutoGeneratingColumn"/>
 
     </Grid>
 </Window>

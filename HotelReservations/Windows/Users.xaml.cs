@@ -73,7 +73,13 @@ namespace HotelReservations.Windows
 
             }
         }
-
+        private void UsersDG_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName.ToLower() == "IsActive".ToLower())
+            {
+                e.Column.Visibility = Visibility.Collapsed;
+            }
+        }
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
             if (view.CurrentItem == null) { return; }

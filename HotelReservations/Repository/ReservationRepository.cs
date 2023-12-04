@@ -22,7 +22,6 @@ namespace HotelReservations.Repository
             return $"{reservation.Id},{reservation.ReservationType},{guestsCSV},{reservation.StartDateTime},{reservation.EndDateTime},{reservation.TotalPrice},{reservation.IsActive}";
         }
 
-
         private Reservation FromCSV(string csv)
         {
             guestService = new GuestService();

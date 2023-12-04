@@ -66,7 +66,14 @@ namespace HotelReservations.Windows
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(contextUser.Username) || string.IsNullOrEmpty(contextUser.Surname) || string.IsNullOrEmpty(contextUser.JMBG) || string.IsNullOrEmpty(contextUser.Password))
+            {
+                MessageBox.Show("Fill required fields.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             userService.SaveUser(contextUser);
+            DialogResult = true;
+
             Close();
         }
 

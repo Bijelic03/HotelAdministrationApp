@@ -36,6 +36,7 @@ namespace HotelReservations.Service
         {
             if (guest.Id == 0)
             {
+                guest.ReservationId = guest.Id +1;
                 guest.Id = GetNextIdValue();
                 Hotel.GetInstance().Guests.Add(guest);
             }

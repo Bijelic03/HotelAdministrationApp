@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System;
+using HotelReservations.Windows;
 
 namespace HotelReservations.Model
 {
@@ -14,7 +15,7 @@ namespace HotelReservations.Model
         public string Name { get; set; }
         public string Surname { get; set; }
         public string IDNumber { get; set; }
-     //   public int ReservationId { get; set; }
+        public int ReservationId { get; set; }
 
 
         public Guest Clone()
@@ -25,7 +26,7 @@ namespace HotelReservations.Model
                 Name = Name,
                 Surname = Surname,
                 IDNumber = IDNumber,
-             //   ReservationId = ReservationId,
+                ReservationId = ReservationId,
             };
         }
     }

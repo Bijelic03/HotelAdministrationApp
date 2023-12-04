@@ -70,7 +70,14 @@ namespace HotelReservations.Service
 
         public int GetNextIdValue()
         {
-            return Hotel.GetInstance().Rooms.Max(r => r.Id) + 1;
+            if (Hotel.GetInstance().Rooms.Count == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return Hotel.GetInstance().Rooms.Max(r => r.Id) + 1;
+            }
         }
     }
 }
