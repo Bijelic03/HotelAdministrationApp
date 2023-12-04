@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservations.Windows"
         mc:Ignorable="d"
-        Title="AddEditUser" Height="450" Width="800">
+        Title="Users" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -18,7 +19,12 @@
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
         </ToolBar>
 
-        <DataGrid Name="UsersDG" Grid.Row="1" 
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="User ID:" VerticalContentAlignment="Center"/>
+            <TextBox Name="UserIDSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="UserIDSearchTB_PreviewKeyUp"/>
+        </StackPanel>
+
+        <DataGrid Name="UsersDG" Grid.Row="2" 
                   IsReadOnly="True" AutoGeneratingColumn="UsersDG_AutoGeneratingColumn"/>
 
     </Grid>

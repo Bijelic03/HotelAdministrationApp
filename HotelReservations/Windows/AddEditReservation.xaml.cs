@@ -95,7 +95,6 @@ namespace HotelReservations.Windows
         }
 
 
-        private Dictionary<Guest, bool> selectedGuestsDict = new Dictionary<Guest, bool>();
 
         private List<Guest> SelectedGuests()
         {
@@ -105,7 +104,7 @@ namespace HotelReservations.Windows
             {
                 var guest = item as Guest;
 
-                // Ako gost nije null, proveri da li je označen
+         
                 if (guest != null)
                 {
                     var cellContent = GuestsSelectDG.Columns[0].GetCellContent(item);
@@ -115,7 +114,6 @@ namespace HotelReservations.Windows
 
                         if (isChecked)
                         {
-                            Debug.WriteLine("checkovan je");
                             selectedGuests.Add(guest);
                         }
                     }
@@ -130,11 +128,10 @@ namespace HotelReservations.Windows
 
         private void FillData()
         {
-            var freeGuests = guestService.GetAllFreeGuests();
+            var guestsWithoutRoom = guestService.GetGuestsWIthoutRoom();
 
             GuestsSelectDG.Columns.Clear();
 
-            // Dodajte CheckBoxColumn programski
             DataGridCheckBoxColumn checkBoxColumn = new DataGridCheckBoxColumn();
             checkBoxColumn.Header = "Select";
             checkBoxColumn.Binding = new Binding("IsSelected");
@@ -142,7 +139,7 @@ namespace HotelReservations.Windows
             GuestsSelectDG.Columns.Add(checkBoxColumn);
 
             GuestsSelectDG.ItemsSource = null;
-            GuestsSelectDG.ItemsSource = freeGuests;
+            GuestsSelectDG.ItemsSource = guestsWithoutRoom;
             GuestsSelectDG.IsSynchronizedWithCurrentItem = true;
         }
 

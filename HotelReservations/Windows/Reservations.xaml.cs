@@ -41,8 +41,6 @@ namespace HotelReservations.Windows
         {
             var reservation = reservationObject as Reservation;
 
-            // Implementiraj filter logiku prema potrebama
-
             return true;
         }
 
@@ -77,10 +75,7 @@ namespace HotelReservations.Windows
             }
         }
 
-        private void ReservationSearchTB_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            view.Refresh();
-        }
+
 
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {

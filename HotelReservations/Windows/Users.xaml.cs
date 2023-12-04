@@ -73,6 +73,22 @@ namespace HotelReservations.Windows
 
             }
         }
+
+        private void UserIDSearchTB_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            // Filter the view based on the entered User ID
+            var userIdFilter = UserIDSearchTB.Text.Trim();
+            if (!string.IsNullOrEmpty(userIdFilter))
+            {
+                view.Filter = item => ((User)item).Id.ToString().Contains(userIdFilter);
+            }
+            else
+            {
+                // If the filter is empty, clear the filter
+                view.Filter = null;
+            }
+        }
+
         private void UsersDG_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.PropertyName.ToLower() == "IsActive".ToLower())

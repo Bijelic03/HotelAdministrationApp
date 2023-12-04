@@ -23,9 +23,8 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <!-- Left side input elements -->
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Margin="0,0,241,0">
-            <StackPanel Orientation="Horizontal" Width="302">
+            <StackPanel Orientation="Horizontal" Width="308">
                 <Label Height="30" Width="150" Content="Reservation type:"/>
                 <ComboBox x:Name="ReservationTypesCB" Height="30" Width="151" VerticalContentAlignment="Center"/>
             </StackPanel>
@@ -49,32 +48,25 @@
                      Text="{Binding TotalPrice}"/>
         </StackPanel>
 
-        <!-- Right side data grid -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.RowSpan="5" Grid.ColumnSpan="2" Margin="400,0,0,77">
-            <DataGrid Name="GuestsSelectDG" Width="385" Height="246">
+            <DataGrid x:Name="GuestsSelectDG" Width="322" Height="246">
                 <DataGrid.Columns>
-                    <!-- Kolona za CheckBox -->
-                    <DataGridCheckBoxColumn x:Name="CheckBox" Header="Select" Binding="{Binding IsSelected}" />
-                    
-                    <!-- Kolona za ID -->
+
                     <DataGridTextColumn x:Name="Id"  IsReadOnly="True" Header="ID" Binding="{Binding Id}" />
 
-                    <!-- Kolona za Ime -->
                     <DataGridTextColumn  IsReadOnly="True" Header="Name" Binding="{Binding Name}" />
 
-                    <!-- Kolona za Prezime -->
                     <DataGridTextColumn  IsReadOnly="True" Header="Surname" Binding="{Binding Surname}" />
 
-                    <!-- Kolona za JMBG -->
                     <DataGridTextColumn  IsReadOnly="True" Header="IDNumber" Binding="{Binding IDNumber}" />
 
-                 
+
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
 
         <!-- Bottom buttons -->
-        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,134,0,0" Grid.RowSpan="2">
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="0,115,0,0" Grid.RowSpan="2">
             <Button Name="SaveBtn" Content="Save" Width="80" Height="30" Margin="5,0,5,0" Click="SaveBtn_Click"/>
             <Button Name="CancelBtn" Content="Cancel" Width="80" Height="30" Click="CancelBtn_Click"/>
         </StackPanel>

@@ -18,11 +18,9 @@ namespace HotelReservations.Service
             return Hotel.GetInstance().Guests;
         }
 
-        public List<Guest> GetAllFreeGuests()
+        public List<Guest> GetGuestsWIthoutRoom()
         {
-           // return Hotel.GetInstance().Guests.Where(g => g.ReservationId == 0).ToList();
-
-            return Hotel.GetInstance().Guests;
+            return Hotel.GetInstance().Guests.Where(g => g.ReservationId == 0).ToList();
         }
 
 

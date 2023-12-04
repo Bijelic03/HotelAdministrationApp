@@ -17,15 +17,12 @@
             <Button Name="AddBtn" Content="Add" BorderBrush="LightGray" Click="AddBtn_Click"/>
             <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0" Click="EditBtn_Click" />
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
-            
+
         </ToolBar>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <Label Content="Reservation ID:" VerticalContentAlignment="Center"/>
-            <TextBox Name="ReservationSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="ReservationSearchTB_PreviewKeyUp"/>
-        </StackPanel>
 
-        <DataGrid Name="ReservationsDG" Grid.Row="2" IsReadOnly="True">
+
+        <DataGrid Name="ReservationsDG" Grid.Row="2" IsReadOnly="True" Margin="148,0,148,0">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Reservation Type" Binding="{Binding ReservationType}" />
@@ -38,12 +35,12 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                
- 
 
 
-                <DataGridTextColumn Header="Start Date/Time" Binding="{Binding StartDateTime}" />
-                <DataGridTextColumn Header="End Date/Time" Binding="{Binding EndDateTime}" />
+
+
+                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTime}" />
+                <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTime}" />
                 <DataGridTextColumn Header="Total Price" Binding="{Binding TotalPrice}" />
             </DataGrid.Columns>
 

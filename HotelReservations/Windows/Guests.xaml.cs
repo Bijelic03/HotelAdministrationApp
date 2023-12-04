@@ -1,9 +1,11 @@
-﻿using HotelReservations.Model;
+﻿// Import necessary namespaces
+using HotelReservations.Model;
 using HotelReservations.Service;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace HotelReservations.Windows
 {
@@ -43,7 +45,6 @@ namespace HotelReservations.Windows
             Show();
         }
 
-
         private void EditBtn_Click(object sender, RoutedEventArgs e)
         {
             var selectedGuest = view.CurrentItem as Guest;
@@ -56,7 +57,19 @@ namespace HotelReservations.Windows
                 view.Refresh();
             }
             FillData();
+        }
 
+        private void GuestNameSearchTB_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            var guestNameFilter = GuestNameSearchTB.Text.Trim();
+            if (!string.IsNullOrEmpty(guestNameFilter))
+            {
+                view.Filter = item => ((Guest)item).Name.Contains(guestNameFilter);
+            }
+            else
+            {
+                view.Filter = null;
+            }
         }
 
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)

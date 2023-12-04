@@ -9,6 +9,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -18,7 +19,12 @@
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
         </ToolBar>
 
-        <DataGrid Name="GuestsDG" Grid.Row="1" 
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="Guest Name:" VerticalContentAlignment="Center"/>
+            <TextBox Name="GuestNameSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="GuestNameSearchTB_PreviewKeyUp"/>
+        </StackPanel>
+
+        <DataGrid Name="GuestsDG" Grid.Row="2" 
                   IsReadOnly="True" />
 
     </Grid>
