@@ -43,5 +43,17 @@ namespace HotelReservations
             var roomPricelist = new RoomPricelist();
             roomPricelist.Show();
         }
+
+        private void ReservationMI_Click(object sender, RoutedEventArgs e)
+        {
+            var reservations = new Reservations();
+            reservations.Show();
+        }
+
+        public void GuestsMI_Click(Object sender,  RoutedEventArgs e)
+        {
+            var guests = new Guests();
+            guests.Show();
+        }
     }
 }

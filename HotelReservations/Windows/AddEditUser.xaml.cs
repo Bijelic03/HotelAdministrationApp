@@ -67,8 +67,6 @@ namespace HotelReservations.Windows
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
             userService.SaveUser(contextUser);
-
-            DialogResult = true;
             Close();
         }
 

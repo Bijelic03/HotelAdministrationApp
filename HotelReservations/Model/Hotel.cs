@@ -25,6 +25,8 @@ namespace HotelReservations.Model
         public List<RoomType> RoomTypes { get; set; } = new List<RoomType>();
         public List<Room> Rooms { get; set; } = new List<Room>();
         public List<Price> PriceList { get; set; } = new List<Price>();
+        public List<Guest> Guests { get; set; } = new List<Guest>();
+
         public List<Reservation> Reservations { get; set; } = new List<Reservation>();
 
         public List<UserType> UserTypes { get; set; } = new List<UserType>();

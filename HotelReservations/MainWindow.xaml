@@ -31,7 +31,16 @@
                     Header="Pricelist"
                     Click="PricelistMI_Click"
                     />
+                <MenuItem 
+                    Name="ReservationMI" 
+                    Header="Reservation"
+                    Click="ReservationMI_Click"/>
+                <MenuItem 
+                    Name="GuestsMI" 
+                    Header="Guests"
+                    Click="GuestsMI_Click"/>
             </MenuItem>
+            
         </Menu>
         
     </Grid>

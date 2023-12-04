@@ -9,6 +9,6 @@ namespace HotelReservations.Model
     [Serializable]
     public enum UserType
     {
-        ADMIN, RECEPTIONIST
+        ADMIN, RECEPTIONIST, GUEST
     }
 }
