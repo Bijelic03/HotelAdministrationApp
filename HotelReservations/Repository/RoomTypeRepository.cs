@@ -1,45 +1,78 @@
-﻿using HotelReservations.Exceptions;
-using HotelReservations.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelReservations.Exceptions;
+using HotelReservations.Model;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace HotelReservations.Repository
 {
     public class RoomTypeRepository : IRoomTypeRepository
     {
-        private string ToCSV(RoomType roomType)
-        {
-            return $"{roomType.Id},{roomType.Name},{roomType.Value},{roomType.NightPrice}, {roomType.DayPrice},{roomType.IsActive}";
-        }
-
-        private RoomType FromCSV(string csv)
-        {
-            string[] csvValues = csv.Split(',');
-
-            var roomType = new RoomType();
-            roomType.Id = int.Parse(csvValues[0]);
-            roomType.Name = csvValues[1];
-            roomType.Value = int.Parse(csvValues[2]);
-            roomType.NightPrice = double.Parse(csvValues[3]);
-            roomType.DayPrice = double.Parse(csvValues[4]);
-            roomType.IsActive = bool.Parse(csvValues[5]);
-
-            return roomType;
-        }
-
-        public void Save(List<RoomType> roomTypeList)
+        public List<RoomType> GetAll()
         {
             try
             {
-                using (var streamWriter = new StreamWriter("roomTypes.txt"))
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    foreach (var roomType in roomTypeList)
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("SELECT * FROM room_type", connection))
                     {
-                        streamWriter.WriteLine(ToCSV(roomType));
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            List<RoomType> roomTypes = new List<RoomType>();
+
+                            while (reader.Read())
+                            {
+                                var roomType = new RoomType()
+                                {
+                                    Id = (int)reader["room_type_id"],
+                                    Name = reader["room_type_name"].ToString(),
+                                    Value = (int)reader["room_type_value"],
+                                    NightPrice = (double)reader["night_price"],
+                                    DayPrice = (double)reader["day_price"],
+                                    IsActive = (bool)reader["room_type_is_active"]
+                                };
+
+                                roomTypes.Add(roomType);
+                            }
+
+                            return roomTypes;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CouldntLoadResourceException(ex.Message);
+            }
+        }
+
+        public int Insert(RoomType roomType)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"
+                            INSERT INTO dbo.room_type (room_type_name, room_type_value, night_price, day_price, room_type_is_active)
+                            OUTPUT inserted.room_type_id
+                            VALUES (@room_type_name, @room_type_value, @night_price, @day_price, @room_type_is_active)
+                        ";
+
+                        command.Parameters.AddWithValue("@room_type_name", roomType.Name);
+                        command.Parameters.AddWithValue("@room_type_value", roomType.Value);
+                        command.Parameters.AddWithValue("@night_price", roomType.NightPrice);
+                        command.Parameters.AddWithValue("@day_price", roomType.DayPrice);
+                        command.Parameters.AddWithValue("@room_type_is_active", roomType.IsActive);
+
+                        return (int)command.ExecuteScalar();
                     }
                 }
             }
@@ -47,40 +80,72 @@ namespace HotelReservations.Repository
             {
                 throw new CouldntPersistDataException(ex.Message);
             }
-
         }
 
-        public List<RoomType> Load()
+        public void Update(RoomType roomType)
         {
-            if (!File.Exists("roomTypes.txt"))
-            {
-                return null;
-            }
-
             try
             {
-                using (var streamReader = new StreamReader("roomTypes.txt"))
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    List<RoomType> roomTypes = new List<RoomType>();
-                    string line;
+                    connection.Open();
 
-                    while ((line = streamReader.ReadLine()) != null)
+                    using (SqlCommand command = connection.CreateCommand())
                     {
-                        var roomType = FromCSV(line);
+                        command.CommandText = @"
+                            UPDATE dbo.room_type 
+                            SET room_type_name=@room_type_name, room_type_value=@room_type_value, night_price=@night_price, day_price=@day_price, room_type_is_active=@room_type_is_active
+                            WHERE room_type_id=@room_type_id
+                        ";
 
-                        roomTypes.Add(roomType);
+                        command.Parameters.AddWithValue("@room_type_id", roomType.Id);
+                        command.Parameters.AddWithValue("@room_type_name", roomType.Name);
+                        command.Parameters.AddWithValue("@room_type_value", roomType.Value);
+                        command.Parameters.AddWithValue("@night_price", roomType.NightPrice);
+                        command.Parameters.AddWithValue("@day_price", roomType.DayPrice);
+                        command.Parameters.AddWithValue("@room_type_is_active", roomType.IsActive);
 
+                        command.ExecuteNonQuery();
                     }
-
-                    return roomTypes;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                throw new CouldntLoadResourceException(ex.Message);
+                throw new CouldntPersistDataException(ex.Message);
+            }
+        }
+
+        public void Save(List<RoomType> roomTypeList)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    connection.Open();
+
+                    foreach (var roomType in roomTypeList)
+                    {
+                        using (SqlCommand command = connection.CreateCommand())
+                        {
+                            command.CommandText = @"
+                                INSERT INTO dbo.room_type (room_type_name, room_type_value, night_price, day_price, room_type_is_active)
+                                VALUES (@room_type_name, @room_type_value, @night_price, @day_price, @room_type_is_active)
+                            ";
+                            command.Parameters.AddWithValue("@room_type_name", roomType.Name);
+                            command.Parameters.AddWithValue("@room_type_value", roomType.Value);
+                            command.Parameters.AddWithValue("@night_price", roomType.NightPrice);
+                            command.Parameters.AddWithValue("@day_price", roomType.DayPrice);
+                            command.Parameters.AddWithValue("@room_type_is_active", roomType.IsActive);
+
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CouldntPersistDataException(ex.Message);
             }
         }
     }
-
 }

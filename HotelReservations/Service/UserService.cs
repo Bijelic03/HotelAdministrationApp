@@ -1,5 +1,6 @@
 ﻿
 using HotelReservations.Model;
+using HotelReservations.Repository;
 using HotelReservations.Windows;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace HotelReservations.Service
 {
     public class UserService
     {
+        private UserRepository userRepository;
+        public UserService() { 
+        userRepository = new UserRepository();
+        }
         public List<User> GetAllUsers()
         {
             return Hotel.GetInstance().Users;
@@ -21,7 +26,7 @@ namespace HotelReservations.Service
         {
             return Hotel.GetInstance().Users.Where(x => x.IsActive).ToList();
         }
-        
+
         public List<User> GetAllActiveGuests()
         {
             return Hotel.GetInstance().Users.Where(x => x.UserType == UserType.GUEST).ToList();
@@ -36,17 +41,24 @@ namespace HotelReservations.Service
             return Hotel.GetInstance().Users.FirstOrDefault(x => x.Id == id);
         }
 
+        public Boolean Login(string username, string password)
+        {
+            User user = userRepository.Login(username, password);
+            return user != null;
+        }
+
         public void SaveUser(User user)
         {
             user.IsActive = true;
             if(user.Id == 0)
             {
-                user.Id = GetNextIdValue();
+                user.Id = userRepository.Insert(user);
                 Hotel.GetInstance().Users.Add(user);
 
             }
             else
             {
+                userRepository.Update(user);
                 var index = Hotel.GetInstance().Users.FindIndex(r => r.Id == user.Id);
                 Hotel.GetInstance().Users[index] = user;
 
@@ -55,6 +67,8 @@ namespace HotelReservations.Service
 
         public void DeleteUser(User user)
         {
+            user.IsActive = false;
+            userRepository.Update(user);
             var index = Hotel.GetInstance().Users.FindIndex(r => r.Id == user.Id);
             Hotel.GetInstance().Users[index].IsActive = false;
         }
@@ -68,7 +82,6 @@ namespace HotelReservations.Service
             else
             {
                 return Hotel.GetInstance().Users.Max(r => r.Id) + 1;
-
             }
         }
     }

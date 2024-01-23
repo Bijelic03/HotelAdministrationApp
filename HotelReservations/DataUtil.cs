@@ -3,6 +3,7 @@ using HotelReservations.Model;
 using HotelReservations.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace HotelReservations
             {
 
                 IRoomTypeRepository roomTypeRepository = new RoomTypeRepository();
-                var loadedRoomTypes = roomTypeRepository.Load();
+                var loadedRoomTypes = roomTypeRepository.GetAll();
 
                 if (loadedRoomTypes != null)
                 {
@@ -61,7 +62,7 @@ namespace HotelReservations
 
 
                 IGuestRepository guestRepository = new GuestRepository();
-                var loadedGuests = guestRepository.Load();
+                var loadedGuests = guestRepository.GetAll();
 
                 if (loadedGuests != null)
                 {
@@ -70,15 +71,17 @@ namespace HotelReservations
 
 
                 IRoomRepository roomRepository = new RoomRepository();
-                var loadedRooms = roomRepository.Load();
+                var loadedRooms = roomRepository.GetAll();
 
                 if (loadedRooms != null)
                 {
                     Hotel.GetInstance().Rooms = loadedRooms;
                 }
 
+
+
                 IUserRepository userRepository = new UserRepository();
-                var loadedUsers = userRepository.Load();
+                var loadedUsers = userRepository.GetAll();
 
                 if (loadedUsers != null)
                 {
@@ -111,32 +114,7 @@ namespace HotelReservations
             }
         }
 
-        public static void PersistData()
-        {
-            try
-            {
-                // Kada se gasi program, čuvamo u rooms.txt
-                // Posle toga će rooms.txt postojati (ako nešto ne pođe po zlu)
-                IRoomRepository roomRepository = new RoomRepository();
-                IRoomTypeRepository roomTypeRepository = new RoomTypeRepository();
-                IUserRepository userRepository = new UserRepository();
-                IReservationRepository reservationRepository = new ReservationRepository();
-                IGuestRepository guestRepository = new GuestRepository();
 
-
-                roomRepository.Save(Hotel.GetInstance().Rooms);
-                roomTypeRepository.Save(Hotel.GetInstance().RoomTypes);
-                userRepository.Save(Hotel.GetInstance().Users);
-                reservationRepository.Save(Hotel.GetInstance().Reservations);
-                guestRepository.Save(Hotel.GetInstance().Guests);
-                //BinaryRoomRepository binaryRoomRepository = new BinaryRoomRepository();
-                //binaryRoomRepository.Save(Hotel.GetInstance().Rooms);
-
-            }
-            catch (CouldntPersistDataException)
-            {
-                Console.WriteLine("Call an administrator, something weird is happening with the files");
-            }
-        }
+        
     }
 }

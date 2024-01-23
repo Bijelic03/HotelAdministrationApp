@@ -1,66 +1,47 @@
-﻿using HotelReservations.Exceptions;
-using HotelReservations.Model;
-using HotelReservations.Service;
-using HotelReservations.Windows;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelReservations.Exceptions;
+using HotelReservations.Model;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HotelReservations.Service;
 
 namespace HotelReservations.Repository
 {
     public class ReservationRepository : IReservationRepository
     {
-
         private GuestService guestService;
 
-        private string ToCSV(Reservation reservation)
-        {
-            string guestsCSV = string.Join(";", reservation.Guests?.Select(g => g.Id) ?? Enumerable.Empty<int>());
-            return $"{reservation.Id},{reservation.ReservationType},{guestsCSV},{reservation.StartDateTime},{reservation.EndDateTime},{reservation.TotalPrice},{reservation.IsActive}";
-        }
 
-        private Reservation FromCSV(string csv)
-        {
-            guestService = new GuestService();
-
-            string[] csvValues = csv.Split(',');
-
-            var reservation = new Reservation();
-            reservation.Id = int.Parse(csvValues[0]);
-            reservation.ReservationType = (ReservationType)Enum.Parse(typeof(ReservationType), csvValues[1], true);
-            string guestsCSV = csvValues[2];
-            List<int> guestsId = guestsCSV.Split(';')
-                                           .Select(s => int.Parse(s))
-                                           .ToList();
-
-            List<Guest> guests = new List<Guest>();
-
-            foreach(int id in guestsId)
-            {
-                guests.Add(guestService.GetGuestById(id));
-            }
-            reservation.Guests = guests;
-
-            reservation.StartDateTime = DateTime.Parse(csvValues[3]);
-            reservation.EndDateTime = DateTime.Parse(csvValues[4]);
-            reservation.TotalPrice = double.Parse(csvValues[5]);
-            reservation.IsActive = bool.Parse(csvValues[6]);
-
-            return reservation;
-        }
 
         public void Save(List<Reservation> reservationList)
         {
             try
             {
-                using (var streamWriter = new StreamWriter("reservations.txt"))
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
+                    connection.Open();
+
                     foreach (var reservation in reservationList)
                     {
-                        streamWriter.WriteLine(ToCSV(reservation));
+                        using (SqlCommand command = connection.CreateCommand())
+                        {
+                            command.CommandText = @"
+                                INSERT INTO reservation (reservation_id, reservation_type, guests, start_date_time, end_date_time, total_price, is_active)
+                                VALUES (@reservation_type, @guests, @start_date_time, @end_date_time, @total_price, @is_active)
+                            ";
+
+                            command.Parameters.AddWithValue("@reservation_id", reservation.Id);
+                            command.Parameters.AddWithValue("@reservation_type", reservation.ReservationType.ToString());
+                            command.Parameters.AddWithValue("@guests", string.Join(";", reservation.Guests?.Select(g => g.Id) ?? Enumerable.Empty<int>()));
+                            command.Parameters.AddWithValue("@start_date_time", reservation.StartDateTime);
+                            command.Parameters.AddWithValue("@end_date_time", reservation.EndDateTime);
+                            command.Parameters.AddWithValue("@total_price", reservation.TotalPrice);
+                            command.Parameters.AddWithValue("@is_active", reservation.IsActive);
+
+                            command.ExecuteNonQuery();
+                        }
                     }
                 }
             }
@@ -68,31 +49,54 @@ namespace HotelReservations.Repository
             {
                 throw new CouldntPersistDataException(ex.Message);
             }
-
         }
 
         public List<Reservation> Load()
         {
-            if (!File.Exists("reservations.txt"))
-            {
-                return null;
-            }
-
             try
             {
-                using (var streamReader = new StreamReader("reservations.txt"))
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    List<Reservation> reservations = new List<Reservation>();
-                    string line;
+                    connection.Open();
 
-                    while ((line = streamReader.ReadLine()) != null)
+                    using (SqlCommand command = new SqlCommand("SELECT * FROM reservation", connection))
                     {
-                        var reservation = FromCSV(line);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            List<Reservation> reservations = new List<Reservation>();
 
-                        reservations.Add(reservation);
+                            while (reader.Read())
+                            {
+                                var reservation = new Reservation()
+                               {
+                                    Id = (int)reader["id"],
+                                    ReservationType = (ReservationType)Enum.Parse(typeof(ReservationType), reader["reservation_type"].ToString(), true),
+                                    StartDateTime = (DateTime)reader["start_date_time"],
+                                    EndDateTime = (DateTime)reader["end_date_time"],
+                                    TotalPrice = (double)reader["total_price"],
+                                    IsActive = (bool)reader["is_active"]
+                                };
+
+                                string guestsCSV = reader["guests"].ToString();
+                                List<int> guestsId = guestsCSV.Split(';')
+                                                               .Select(s => int.Parse(s))
+                                                               .ToList();
+
+                                List<Guest> guests = new List<Guest>();
+
+                                foreach (int id in guestsId)
+                                {
+                                    guests.Add(guestService.GetGuestById(id));
+                                }
+
+                                reservation.Guests = guests;
+
+                                reservations.Add(reservation);
+                            }
+
+                            return reservations;
+                        }
                     }
-
-                    return reservations;
                 }
             }
             catch (Exception ex)

@@ -45,22 +45,26 @@ namespace HotelReservations.Service
 
         public void SaveRoom(Room room)
         {
-            room.IsActive = true;
             if (room.Id == 0)
             {
-                
-                room.Id = GetNextIdValue();
+                room.Id = roomRepository.Insert(room);
                 Hotel.GetInstance().Rooms.Add(room);
             }
             else
             {
+                roomRepository.Update(room);
                 var index = Hotel.GetInstance().Rooms.FindIndex(r => r.Id == room.Id);
                 Hotel.GetInstance().Rooms[index] = room;
             }
         }
 
-         public void DeleteRoom(Room room)
+
+
+
+        public void DeleteRoom(Room room)
         {
+            room.IsActive = false;
+            roomRepository.Update(room);
             var index = Hotel.GetInstance().Rooms.FindIndex(r => r.Id == room.Id);
             Hotel.GetInstance().Rooms[index].IsActive = false;
         }

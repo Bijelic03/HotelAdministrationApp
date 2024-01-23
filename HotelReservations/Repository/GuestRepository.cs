@@ -1,48 +1,72 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Data.SqlClient;
 using HotelReservations.Exceptions;
 using HotelReservations.Model;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace HotelReservations.Repository
 {
     public class GuestRepository : IGuestRepository
     {
-        private string ToCSV(Guest guest)
-        {
-            //,{guest.ReservationId}
-            return $"{guest.Id},{guest.Name},{guest.Surname},{guest.IDNumber}";
-        }
-
-        private Guest FromCSV(string csv)
-        {
-            string[] csvValues = csv.Split(',');
-
-            var guest = new Guest();
-            guest.Id = int.Parse(csvValues[0]);
-            guest.Name = csvValues[1];
-            guest.Surname = csvValues[2];
-            guest.IDNumber = csvValues[3];
-        //    guest.ReservationId = int.Parse(csvValues[4]);
-
-            return guest;
-        }
-
-        public void Save(List<Guest> guestList)
+        public List<Guest> GetAll()
         {
             try
             {
-                using (var streamWriter = new StreamWriter("guests.txt"))
+                var guests = new List<Guest>();
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    foreach (var guest in guestList)
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand("SELECT * FROM dbo.guest", connection))
                     {
-                        streamWriter.WriteLine(ToCSV(guest));
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var guest = new Guest()
+                                {
+                                    Id = (int)reader["id"],
+                                    Name = reader["name"].ToString(),
+                                    Surname = reader["surname"].ToString(),
+                                    IDNumber = reader["id_number"].ToString()
+                                };
+
+                                guests.Add(guest);
+                            }
+                        }
+                    }
+                }
+
+                return guests;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new CouldntLoadResourceException(ex.Message);
+            }
+        }
+
+        public int Insert(Guest guest)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = @"
+                            INSERT INTO dbo.guest (name, surname, id_number)
+                            OUTPUT inserted.id
+                            VALUES (@name, @surname, @id_number)
+                        ";
+
+                        command.Parameters.AddWithValue("@name", guest.Name);
+                        command.Parameters.AddWithValue("@surname", guest.Surname);
+                        command.Parameters.AddWithValue("@id_number", guest.IDNumber);
+
+                        return (int)command.ExecuteScalar();
                     }
                 }
             }
@@ -52,33 +76,66 @@ namespace HotelReservations.Repository
             }
         }
 
-        public List<Guest> Load()
+        public void Update(Guest guest)
         {
-            if (!File.Exists("guests.txt"))
-            {
-                return null;
-            }
-
             try
             {
-                using (var streamReader = new StreamReader("guests.txt"))
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    List<Guest> guests = new List<Guest>();
-                    string line;
+                    connection.Open();
 
-                    while ((line = streamReader.ReadLine()) != null)
+                    using (SqlCommand command = connection.CreateCommand())
                     {
-                        var guest = FromCSV(line);
-                        guests.Add(guest);
-                    }
+                        command.CommandText = @"
+                            UPDATE dbo.guest
+                            SET name = @name, surname = @surname, id_number = @id_number
+                            WHERE id = @id
+                        ";
 
-                    return guests;
+                        command.Parameters.AddWithValue("@id", guest.Id);
+                        command.Parameters.AddWithValue("@name", guest.Name);
+                        command.Parameters.AddWithValue("@surname", guest.Surname);
+                        command.Parameters.AddWithValue("@id_number", guest.IDNumber);
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                throw new CouldntLoadResourceException(ex.Message);
+                throw new CouldntPersistDataException(ex.Message);
+            }
+        }
+
+        public void Save(List<Guest> guestList)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    connection.Open();
+
+                    foreach (var guest in guestList)
+                    {
+                        using (SqlCommand command = connection.CreateCommand())
+                        {
+                            command.CommandText = @"
+                                INSERT INTO dbo.guest (name, surname, id_number)
+                                VALUES (@name, @surname, @id_number)
+                            ";
+
+                            command.Parameters.AddWithValue("@name", guest.Name);
+                            command.Parameters.AddWithValue("@surname", guest.Surname);
+                            command.Parameters.AddWithValue("@id_number", guest.IDNumber);
+
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CouldntPersistDataException(ex.Message);
             }
         }
     }

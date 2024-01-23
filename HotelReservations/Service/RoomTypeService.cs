@@ -1,4 +1,6 @@
 ﻿using HotelReservations.Model;
+using HotelReservations.Repository;
+using HotelReservations.Windows;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +12,10 @@ namespace HotelReservations.Service
 {
     public class RoomTypeService
     {
-
+        private IRoomTypeRepository roomTypeRepository ;
+        public RoomTypeService() {
+            roomTypeRepository = new RoomTypeRepository();
+        }
         public List<RoomType> GetAllRoomTypes()
         {
             return Hotel.GetInstance().RoomTypes;
@@ -23,16 +28,15 @@ namespace HotelReservations.Service
 
         public void SaveRoomType(RoomType roomType)
         {
-
             roomType.IsActive = true;
-
             if (roomType.Id == 0)
             {
-                roomType.Id = GetNextIdValue();
+                roomType.Id = roomTypeRepository.Insert(roomType);
                 Hotel.GetInstance().RoomTypes.Add(roomType);
             }
             else
             {
+                roomTypeRepository.Update(roomType);
                 var index = Hotel.GetInstance().RoomTypes.FindIndex(r => r.Id == roomType.Id);
                 Hotel.GetInstance().RoomTypes[index] = roomType;
             }

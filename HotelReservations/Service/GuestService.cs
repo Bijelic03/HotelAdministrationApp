@@ -8,11 +8,17 @@ using HotelReservations.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HotelReservations.Repository;
 
 namespace HotelReservations.Service
 {
     public class GuestService
     {
+        private IGuestRepository guestRepository;
+
+        public GuestService() {
+            guestRepository = new GuestRepository();
+        }
         public List<Guest> GetAllGuests()
         {
             return Hotel.GetInstance().Guests;
@@ -30,20 +36,26 @@ namespace HotelReservations.Service
             return Hotel.GetInstance().Guests.FirstOrDefault(x => x.Id == id);
         }
 
+
+
         public void SaveGuest(Guest guest)
         {
             if (guest.Id == 0)
             {
-                guest.ReservationId = guest.Id +1;
-                guest.Id = GetNextIdValue();
+                guest.Id = guestRepository.Insert(guest);
                 Hotel.GetInstance().Guests.Add(guest);
             }
             else
             {
+                guestRepository.Update(guest);
                 var index = Hotel.GetInstance().Guests.FindIndex(r => r.Id == guest.Id);
                 Hotel.GetInstance().Guests[index] = guest;
             }
         }
+
+
+
+
 
 
 

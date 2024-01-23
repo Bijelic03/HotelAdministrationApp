@@ -9,7 +9,9 @@ namespace HotelReservations.Repository
 {
     public interface IRoomRepository
     {
-        List<Room> Load();
+        List<Room> GetAll();
+        int Insert(Room room);
+        void Update(Room room);
         void Save(List<Room> roomList);
     }
 }

@@ -49,6 +49,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.RowSpan="5" Grid.ColumnSpan="2" Margin="400,0,0,77">
+            
             <DataGrid x:Name="GuestsSelectDG" Width="322" Height="246">
                 <DataGrid.Columns>
 

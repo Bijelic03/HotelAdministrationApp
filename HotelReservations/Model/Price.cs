@@ -12,5 +12,7 @@ namespace HotelReservations.Model
         public RoomType RoomType { get; set; }
         public ReservationType ReservationType { get; set; }
         public double PriceValue { get; set; }
+        public bool IsActive { get; set; } = true;
+
     }
 }

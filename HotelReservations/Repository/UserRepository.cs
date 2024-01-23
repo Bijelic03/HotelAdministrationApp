@@ -1,62 +1,78 @@
-﻿using HotelReservations.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using HotelReservations.Exceptions;
 using HotelReservations.Model;
 using HotelReservations.Windows;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HotelReservations.Repository
 {
     internal class UserRepository : IUserRepository
     {
-        private string ToCSV(User user)
+        public List<User> GetAll()
         {
-            return $"{user.Id},{user.Name},{user.Surname},{user.JMBG},{user.Username},{user.Password},{user.UserType}, {user.IsActive}";
-        }
-
-        private User FromCSV(string csv)
-        {
-            string[] csvValues = csv.Split(',');
-
-            var user = new User();
-            user.Id = int.Parse(csvValues[0]);
-            user.Name = csvValues[1];
-            user.Surname = csvValues[2];
-            user.JMBG = csvValues[3];
-            user.Username = csvValues[4];
-            user.Password = csvValues[5];
-            user.UserType = (UserType)Enum.Parse(typeof(UserType), csvValues[6], true);
-            user.IsActive = bool.Parse(csvValues[7]);
-
             try
             {
-                user.UserType = (UserType)Enum.Parse(typeof(UserType), csvValues[6], true);
+                var users = new List<User>();
+                using (SqlConnection conn = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    conn.Open();
+                    var command = new SqlCommand("SELECT * FROM users", conn);
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User()
+                            {
+                                Id = (int)reader["id"],
+                                Name = reader["name"].ToString(),
+                                Surname = reader["surname"].ToString(),
+                                JMBG = reader["jmbg"].ToString(),
+                                Username = reader["username"].ToString(),
+                                Password = reader["password"].ToString(),
+                                UserType = (UserType)Enum.Parse(typeof(UserType), reader["user_type"].ToString(), true),
+                                IsActive = (bool)reader["is_active"]
+                            };
+                            users.Add(user);
+                        }
+                    }
+                }
+
+                return users;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error parsing UserType: {csvValues[6]}");
                 Console.WriteLine(ex.Message);
-                throw;
+                throw new CouldntLoadResourceException(ex.Message);
             }
-
-            //user.UserType = Hotel.GetInstance().RoomTypes.Find(rt => rt.Id == roomTypeId);
-
-            return user;
         }
 
-
-        public void Save(List<User> userList)
+        public int Insert(User user)
         {
             try
             {
-                using (var streamWriter = new StreamWriter("users.txt"))
+                using (SqlConnection conn = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    foreach (var user in userList)
+                    conn.Open();
+
+                    using (SqlCommand command = conn.CreateCommand())
                     {
-                        streamWriter.WriteLine(ToCSV(user));
+                        command.CommandText = @"
+                            INSERT INTO users (name, surname, jmbg, username, password, user_type, is_active)
+                            OUTPUT inserted.id
+                            VALUES (@name, @surname, @jmbg, @username, @password, @user_type, @is_active)
+                        ";
+
+                        command.Parameters.AddWithValue("@name", user.Name);
+                        command.Parameters.AddWithValue("@surname", user.Surname);
+                        command.Parameters.AddWithValue("@jmbg", user.JMBG);
+                        command.Parameters.AddWithValue("@username", user.Username);
+                        command.Parameters.AddWithValue("@password", user.Password);
+                        command.Parameters.AddWithValue("@user_type", user.UserType.ToString());
+                        command.Parameters.AddWithValue("@is_active", user.IsActive);
+
+                        return (int)command.ExecuteScalar();
                     }
                 }
             }
@@ -64,38 +80,123 @@ namespace HotelReservations.Repository
             {
                 throw new CouldntPersistDataException(ex.Message);
             }
-
         }
-
-        public List<User> Load()
+        public User Login(string username, string password)
         {
-            if (!File.Exists("users.txt"))
-            {
-                return null;
-            }
-
             try
             {
-                using (var streamReader = new StreamReader("users.txt"))
+                using (SqlConnection conn = new SqlConnection(Config.CONNECTION_STRING))
                 {
-                    List<User> users = new List<User>();
-                    string line;
+                    conn.Open();
 
-                    while ((line = streamReader.ReadLine()) != null)
+                    using (SqlCommand command = conn.CreateCommand())
                     {
-                        var user = FromCSV(line);
+                        command.CommandText = @"
+                    SELECT * FROM users WHERE username = @username AND password = @password";
 
-                        users.Add(user);
+                        command.Parameters.AddWithValue("@username", username);
+                        command.Parameters.AddWithValue("@password", password);
 
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                User user = new User
+                                {
+                                    Id = (int)reader["id"],
+                                    Name = reader["name"].ToString(),
+                                    Surname = reader["surname"].ToString(),
+                                    JMBG = reader["jmbg"].ToString(),
+                                    Username = reader["username"].ToString(),
+                                    Password = reader["password"].ToString(),
+                                    UserType = (UserType)Enum.Parse(typeof(UserType), reader["user_type"].ToString(), true),
+                                    IsActive = (bool)reader["is_active"]
+                                };
+
+                                return user;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
                     }
-
-                    return users;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                throw new CouldntLoadResourceException(ex.Message);
+                throw new CouldntPersistDataException(ex.Message);
+            }
+        }
+
+
+        public void Update(User user)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    conn.Open();
+
+                    using (SqlCommand command = conn.CreateCommand())
+                    {
+                        command.CommandText = @"
+                            UPDATE users 
+                            SET name=@name, surname=@surname, jmbg=@jmbg, username=@username, password=@password, user_type=@user_type, is_active=@is_active
+                            WHERE id=@id
+                        ";
+
+                        command.Parameters.AddWithValue("@id", user.Id);
+                        command.Parameters.AddWithValue("@name", user.Name);
+                        command.Parameters.AddWithValue("@surname", user.Surname);
+                        command.Parameters.AddWithValue("@jmbg", user.JMBG);
+                        command.Parameters.AddWithValue("@username", user.Username);
+                        command.Parameters.AddWithValue("@password", user.Password);
+                        command.Parameters.AddWithValue("@user_type", user.UserType.ToString());
+                        command.Parameters.AddWithValue("@is_active", user.IsActive);
+
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CouldntPersistDataException(ex.Message);
+            }
+        }
+
+        public void Save(List<User> userList)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(Config.CONNECTION_STRING))
+                {
+                    conn.Open();
+
+                    foreach (var user in userList)
+                    {
+                        using (SqlCommand command = conn.CreateCommand())
+                        {
+                            command.CommandText = @"
+                                INSERT INTO users (name, surname, jmbg, username, password, user_type, is_active)
+                                VALUES (@name, @surname, @jmbg, @username, @password, @user_type, @is_active)
+                            ";
+                            command.Parameters.AddWithValue("@name", user.Name);
+                            command.Parameters.AddWithValue("@surname", user.Surname);
+                            command.Parameters.AddWithValue("@jmbg", user.JMBG);
+                            command.Parameters.AddWithValue("@username", user.Username);
+                            command.Parameters.AddWithValue("@password", user.Password);
+                            command.Parameters.AddWithValue("@user_type", user.UserType.ToString());
+                            command.Parameters.AddWithValue("@is_active", user.IsActive);
+
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CouldntPersistDataException(ex.Message);
             }
         }
     }
