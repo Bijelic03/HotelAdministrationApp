@@ -48,6 +48,8 @@ namespace HotelReservations.Service
             Hotel.GetInstance().RoomTypes[index].IsActive = false;
         }
 
+
+
         public int GetNextIdValue()
         {
             return Hotel.GetInstance().RoomTypes.Max(r => r.Id) + 1;

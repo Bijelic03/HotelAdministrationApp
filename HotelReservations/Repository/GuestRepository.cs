@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using HotelReservations.Exceptions;
 using HotelReservations.Model;
+using HotelReservations.Windows;
 
 namespace HotelReservations.Repository
 {
@@ -28,7 +29,8 @@ namespace HotelReservations.Repository
                                     Id = (int)reader["id"],
                                     Name = reader["name"].ToString(),
                                     Surname = reader["surname"].ToString(),
-                                    IDNumber = reader["id_number"].ToString()
+                                    IDNumber = reader["id_number"].ToString(),
+                                    ReservationId = (int)reader["id_reservation"]
                                 };
 
                                 guests.Add(guest);

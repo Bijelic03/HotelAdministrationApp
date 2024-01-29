@@ -47,6 +47,7 @@ namespace HotelReservations.Windows
             UsersDG.IsSynchronizedWithCurrentItem = true;
         }
 
+
         private void AddBtn_Click(object sender, RoutedEventArgs e)
         {
             var addUsersWindow = new AddEditUser();
@@ -89,11 +90,18 @@ namespace HotelReservations.Windows
             }
         }
 
+
         private void UsersDG_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             if (e.PropertyName.ToLower() == "IsActive".ToLower())
             {
                 e.Column.Visibility = Visibility.Collapsed;
+            }
+            switch (e.Column.Header.ToString())
+            {
+                case "Password":
+                    e.Column.Visibility = Visibility.Collapsed;
+                    break;
             }
         }
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)

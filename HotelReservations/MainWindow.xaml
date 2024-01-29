@@ -17,30 +17,40 @@
                 Header="General"
                 Height="30">
                 <MenuItem 
+                    Visibility="{Binding Path=IsAdmin}" 
                     Name="RoomsMI" 
                     Header="Rooms"
                     Click="RoomsMI_Click"
                     />
                 <MenuItem 
+                    Visibility="{Binding Path=IsAdmin}" 
                     Name="UsersMI" 
                     Header="Users"
                     Click="UsersMI_Click"
                     />
                 <MenuItem 
+                    Visibility="{Binding Path=IsAdmin}" 
                     Name="PricelistMI" 
                     Header="Pricelist"
                     Click="PricelistMI_Click"
                     />
                 <MenuItem 
+                    Visibility="{Binding Path=IsRecepcionist}" 
                     Name="ReservationMI" 
                     Header="Reservation"
                     Click="ReservationMI_Click"/>
                 <MenuItem 
+                    Visibility="{Binding Path=IsRecepcionist}"
                     Name="GuestsMI" 
                     Header="Guests"
                     Click="GuestsMI_Click"/>
+                
             </MenuItem>
-            
+            <MenuItem
+                Header="Logout"
+                Height="30"
+                Click="LogoutMI_Click"/>
+
         </Menu>
         
     </Grid>

@@ -26,9 +26,11 @@ namespace HotelReservations.Windows
 
             if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
             {
-                if (userService.Login(username, password))
+                UserService.LoggedUser = userService.Login(username, password);
+                if (UserService.LoggedUser != null)
                 {
                     var mainWindow = new MainWindow();
+
                     mainWindow.Show();
                     this.Close();
 

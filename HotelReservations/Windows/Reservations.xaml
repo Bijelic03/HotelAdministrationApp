@@ -17,15 +17,28 @@
             <Button Name="AddBtn" Content="Add" BorderBrush="LightGray" Click="AddBtn_Click"/>
             <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0" Click="EditBtn_Click" />
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
+            
 
         </ToolBar>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="Room number:" VerticalContentAlignment="Center"/>
+            <TextBox Name="RoomNumberSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="RoomNumberSearchTB_PreviewKeyUp"/>
+            <DatePicker x:Name="StartDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center" SelectedDateChanged="StartDateTimePicker_SelectedDateChanged"/>
+            <DatePicker x:Name="EndDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center" SelectedDateChanged="EndDateTimePicker_SelectedDateChanged"/>
 
 
 
-        <DataGrid Name="ReservationsDG" Grid.Row="2" IsReadOnly="True" Margin="148,0,148,0">
+
+
+        </StackPanel>
+
+
+        <DataGrid Name="ReservationsDG" Grid.Row="2" IsReadOnly="True" Margin="0,0,0,217">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Reservation Type" Binding="{Binding ReservationType}" />
+                <DataGridTextColumn Header="Room Number" Binding="{Binding Room.RoomNumber}" />
+                <!-- Add this line for Room Number -->
 
                 <!-- Dodajte sledeći deo koda za Guests -->
                 <DataGridTemplateColumn Header="Guests">
@@ -36,16 +49,31 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTime}" />
+                <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTime}" />
+                <DataGridTextColumn Header="Total Price" Binding="{Binding TotalPrice}" />
+            </DataGrid.Columns>
+        </DataGrid>
 
+        <DataGrid Name="CurrentReservationsDG" Grid.Row="2" IsReadOnly="True" Margin="0,177,0,0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Reservation Type" Binding="{Binding ReservationType}" />
+                <DataGridTextColumn Header="Room Number" Binding="{Binding Room.RoomNumber}" />
 
+                <DataGridTemplateColumn Header="Guests">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding GuestsIds}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <DataGridTextColumn Header="Start Date" Binding="{Binding StartDateTime}" />
                 <DataGridTextColumn Header="End Date" Binding="{Binding EndDateTime}" />
                 <DataGridTextColumn Header="Total Price" Binding="{Binding TotalPrice}" />
             </DataGrid.Columns>
-
         </DataGrid>
-
 
 
 

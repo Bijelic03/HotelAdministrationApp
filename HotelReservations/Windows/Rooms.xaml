@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HotelReservations.Windows"
         mc:Ignorable="d"
-        Title="Rooms" Height="450" Width="800">
+        Title="Rooms" Height="450" Width="800" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
@@ -17,16 +17,29 @@
             <Button Name="AddBtn" Content="Add" BorderBrush="LightGray" Click="AddBtn_Click"/>
             <Button Name="EditBtn" Content="Edit" BorderBrush="LightGray" Margin="5,0,0,0"  Click="EditBtn_Click" />
             <Button Name="DeleteBtn" Content="Delete" BorderBrush="LightGray" Margin="5,0,0,0" Click="DeleteBtn_Click"/>
+            
         </ToolBar>
-        
+
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Label Content="Room number:" VerticalContentAlignment="Center"/>
             <TextBox Name="RoomNumberSearchTB" Height="24" Width="150" Margin="3" VerticalContentAlignment="Center" PreviewKeyUp="RoomNumberSearchTB_PreviewKeyUp"/>
+
+            <!-- ComboBox for Room Availability Status -->
+            <Label Content="Availability:" VerticalContentAlignment="Center" Margin="10,0,0,0"/>
+            <ComboBox Name="AvailabilityFilterCB" SelectedIndex="0" SelectionChanged="AvailabilityFilterCB_SelectionChanged">
+                <ComboBoxItem Content="All"/>
+                <ComboBoxItem Content="Free"/>
+                <ComboBoxItem Content="Occupied"/>
+            </ComboBox>
+
+            <ComboBox Name="RoomTypeFilterCB" SelectedIndex="0" SelectionChanged="RoomTypeFilterCB_SelectionChanged"
+          ItemsSource="{Binding RoomTypes}" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+
+
         </StackPanel>
-        
+
         <DataGrid Name="RoomsDG" Grid.Row="2" 
                   IsReadOnly="True" AutoGeneratingColumn="RoomsDG_AutoGeneratingColumn"/>
-
 
     </Grid>
 </Window>

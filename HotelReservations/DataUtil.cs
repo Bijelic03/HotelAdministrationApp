@@ -89,7 +89,7 @@ namespace HotelReservations
                 }
 
                 IReservationRepository reservationRepository = new ReservationRepository();
-                var loadedReservation = reservationRepository.Load();
+                var loadedReservation = reservationRepository.GetAll();
 
                 if (loadedReservation != null)
                 {

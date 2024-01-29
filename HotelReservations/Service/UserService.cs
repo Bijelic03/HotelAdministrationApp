@@ -13,6 +13,7 @@ namespace HotelReservations.Service
 {
     public class UserService
     {
+        public static User LoggedUser;
         private UserRepository userRepository;
         public UserService() { 
         userRepository = new UserRepository();
@@ -41,10 +42,10 @@ namespace HotelReservations.Service
             return Hotel.GetInstance().Users.FirstOrDefault(x => x.Id == id);
         }
 
-        public Boolean Login(string username, string password)
+        public User Login(string username, string password)
         {
             User user = userRepository.Login(username, password);
-            return user != null;
+            return user;
         }
 
         public void SaveUser(User user)

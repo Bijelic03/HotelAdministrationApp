@@ -12,10 +12,12 @@ namespace HotelReservations.Service
 {
     public class RoomService
     {
-        IRoomRepository roomRepository;
+        private IRoomRepository roomRepository;
         public RoomService() 
         { 
+
             roomRepository = new RoomRepository();
+
         }
 
         public List<Room> GetAllRooms()
@@ -27,6 +29,33 @@ namespace HotelReservations.Service
         {
             return Hotel.GetInstance().Rooms.Where(r => r.IsActive).ToList();
         }
+
+        public List<Room> GetAllFreeRooms()
+        {
+            List<Room> rooms = new List<Room>();
+            foreach (Reservation reservation in Hotel.GetInstance().Reservations)
+            {
+                if (!GetAllActiveRooms().Contains(reservation.Room))
+                {
+                    rooms.Add(reservation.Room);
+                }
+            }
+            return rooms;
+        }
+
+        public List<Room> GetAllOcupiedRooms()
+        {
+            List<Room> rooms = new List<Room>();
+            foreach (Reservation reservation in Hotel.GetInstance().Reservations)
+            {
+                if (GetAllActiveRooms().Contains(reservation.Room))
+                { 
+                    rooms.Add(reservation.Room);
+                }
+            }
+            return rooms;
+        }
+
         public List<Room> GetSortedRooms()
         {
             var rooms = Hotel.GetInstance().Rooms;
@@ -69,7 +98,11 @@ namespace HotelReservations.Service
             Hotel.GetInstance().Rooms[index].IsActive = false;
         }
 
+        public Room getRoomById(int id)
+        {
+            return Hotel.GetInstance().Rooms.Find(r => r.Id == id);
 
+        }
 
 
         public int GetNextIdValue()

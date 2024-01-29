@@ -24,14 +24,17 @@ namespace HotelReservations.Windows
     public partial class Rooms : Window
     {
         private RoomService roomService;
+        private RoomTypeService roomTypeService;
 
         private ICollectionView view;
         public Rooms()
         {
             InitializeComponent();
+            roomTypeService = new RoomTypeService();
             roomService = new RoomService();
-
+            DataContext = roomService;
             FillData();
+            RoomTypeFilterCB.ItemsSource = roomTypeService.GetAllActiveRoomTypes();
 
         }
 
@@ -47,20 +50,81 @@ namespace HotelReservations.Windows
             RoomsDG.ItemsSource = view;
             RoomsDG.IsSynchronizedWithCurrentItem = true;
         }
-
         private bool DoFilter(object roomObject)
         {
             var room = roomObject as Room;
 
             var roomNumberSearchParam = RoomNumberSearchTB.Text;
+            var roomTypeFilter = GetSelectedRoomTypeFilter();
+            var isOccupiedFilter = GetSelectedAvailabilityFilter();
 
-            if (room.RoomNumber.Contains(roomNumberSearchParam))
+            // Retrieve the list of free or occupied rooms based on the filter.
+            List<Room> filteredRooms;
+            if (isOccupiedFilter.HasValue && isOccupiedFilter.Value)
             {
-                return true;
+                filteredRooms = roomService.GetAllOcupiedRooms();
+            }
+            else if (isOccupiedFilter.HasValue && !isOccupiedFilter.Value)
+            {
+                filteredRooms = roomService.GetAllFreeRooms();
+            }
+            else
+            {
+                // No filter applied for availability status.
+                filteredRooms = roomService.GetAllActiveRooms();
             }
 
-            return false;
+            // Apply filters based on room number, room type, and availability status.
+            return room.RoomNumber.Contains(roomNumberSearchParam) &&
+                   (roomTypeFilter == null || room.RoomType == roomTypeFilter) &&
+                   filteredRooms.Contains(room);
         }
+
+
+        private bool? GetSelectedAvailabilityFilter()
+        {
+            if (AvailabilityFilterCB.SelectedIndex >= 0)
+            {
+                switch (AvailabilityFilterCB.SelectedIndex)
+                {
+                    case 0: // All
+                        return null;
+                    case 1: // Free
+                        return false;
+                    case 2: // Occupied
+                        return true;
+                    default:
+                        return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+
+        private void RoomTypeFilterCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            view.Refresh();
+        }
+
+        private void AvailabilityFilterCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (view != null)
+            {
+                view.Refresh();
+            }
+        }
+
+        private RoomType GetSelectedRoomTypeFilter()
+        {
+            var selectedItem = RoomTypeFilterCB.SelectedItem as RoomType;
+            return selectedItem;
+        }
+
+
 
         private void RoomsDG_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {

@@ -55,7 +55,6 @@ namespace HotelReservations.Windows
                 MessageBox.Show("JMBG must be a valid number.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
             guestService.SaveGuest(contextGuest);
             DialogResult = true;
             Close();

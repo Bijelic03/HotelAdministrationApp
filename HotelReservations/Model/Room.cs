@@ -19,7 +19,7 @@ namespace HotelReservations.Model
         public override string ToString()
         {
             //return "Room number: " + RoomNumber; // ...
-            return $"Room number: {RoomNumber} {IsActive}";
+            return $"Room number: {RoomNumber}, {RoomType.Value} persons";
         }
 
         public Room Clone()

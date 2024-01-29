@@ -19,6 +19,8 @@ namespace HotelReservations.Model
         public double TotalPrice { get; set; }
         public bool IsActive { get; set; }
 
+        public Room Room { get; set; }
+
         public string GuestsIds => string.Join(", ", Guests.Select(g => g.Id));
 
         public Reservation Clone()
@@ -31,6 +33,7 @@ namespace HotelReservations.Model
                 StartDateTime = StartDateTime,
                 EndDateTime = EndDateTime,
                 TotalPrice = TotalPrice,
+                Room = Room,
                 IsActive = IsActive
             };
         }

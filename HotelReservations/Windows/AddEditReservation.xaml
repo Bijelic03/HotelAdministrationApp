@@ -27,29 +27,33 @@
             <StackPanel Orientation="Horizontal" Width="308">
                 <Label Height="30" Width="150" Content="Reservation type:"/>
                 <ComboBox x:Name="ReservationTypesCB" Height="30" Width="151" VerticalContentAlignment="Center"/>
+
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,0,241,0">
+            <StackPanel Orientation="Horizontal" Width="308">
+                <Label Height="30" Width="150" Content="Room:"/>
+                <ComboBox x:Name="RoomTypesCB" Height="30" Width="151" VerticalContentAlignment="Center"/>
+
             </StackPanel>
         </StackPanel>
 
 
-
-        <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Margin="0,10,232,40" Grid.RowSpan="2">
-            <Label Height="30" Width="150" Content="Start date and time:"/>
-            <DatePicker x:Name="StartDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center"/>
-        </StackPanel>
-
         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,10,232,40" Grid.RowSpan="2">
-            <Label Height="30" Width="150" Content="End date and time:"/>
-            <DatePicker x:Name="EndDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center"/>
+            <Label Height="30" Width="150" Content="Start date and time:"/>
+            <DatePicker x:Name="StartDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center" SelectedDateChanged="StartDateTimePicker_SelectedDateChanged"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Horizontal" Margin="0,20,238,80" Grid.RowSpan="3">
-            <Label Height="30" Width="150" Content="Total price:"/>
-            <TextBox x:Name="TotalPriceTB" Height="30" Width="150" VerticalContentAlignment="Center" 
-                     Text="{Binding TotalPrice}"/>
+        <StackPanel Grid.Row="4" Grid.Column="0" Orientation="Horizontal" Margin="0,15,232,119" Grid.RowSpan="2">
+            <Label Height="30" Width="150" Content="End date and time:"/>
+            <DatePicker x:Name="EndDateTimePicker" Height="30" Width="150" VerticalContentAlignment="Center" SelectedDateChanged="EndDateTimePicker_SelectedDateChanged"/>
         </StackPanel>
+
+
+
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.RowSpan="5" Grid.ColumnSpan="2" Margin="400,0,0,77">
-            
+
             <DataGrid x:Name="GuestsSelectDG" Width="322" Height="246">
                 <DataGrid.Columns>
 
@@ -72,4 +76,5 @@
             <Button Name="CancelBtn" Content="Cancel" Width="80" Height="30" Click="CancelBtn_Click"/>
         </StackPanel>
     </Grid>
+
 </Window>
