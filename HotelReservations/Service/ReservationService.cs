@@ -15,12 +15,10 @@ namespace HotelReservations.Service
     public class ReservationService
     {
 
-        RoomService roomService;
         IReservationRepository reservationRepository;
         IGuestRepository guestRepository;
         public ReservationService()
         {
-            roomService = new RoomService();
             guestRepository = new GuestRepository();
             reservationRepository = new ReservationRepository();
         }

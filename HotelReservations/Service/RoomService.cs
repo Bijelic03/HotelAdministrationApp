@@ -13,9 +13,9 @@ namespace HotelReservations.Service
     public class RoomService
     {
         private IRoomRepository roomRepository;
+        private ReservationService reservationService;
         public RoomService() 
         { 
-
             roomRepository = new RoomRepository();
 
         }
@@ -32,8 +32,18 @@ namespace HotelReservations.Service
 
         public List<Room> GetAllFreeRooms()
         {
+            reservationService = new ReservationService();
+
             List<Room> rooms = new List<Room>();
-            foreach (Reservation reservation in Hotel.GetInstance().Reservations)
+            foreach (Room room in GetAllActiveRooms())
+            {
+
+                if (!reservationService.GetAllActiveReservations().Exists(reservation => reservation.Room == room))
+                {
+                    rooms.Add(room);
+                }
+            }
+            foreach (Reservation reservation in reservationService.GetAllActiveReservations() )
             {
                 if (!GetAllActiveRooms().Contains(reservation.Room))
                 {

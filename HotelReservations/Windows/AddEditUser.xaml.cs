@@ -47,8 +47,9 @@ namespace HotelReservations.Windows
         private void AdjustWindow(User user = null)
         {
             // Inicijalizujte ComboBox koristeći generičku kolekciju
-            UserTypesCB.ItemsSource = Enum.GetValues(typeof(UserType));
-
+            UserTypesCB.ItemsSource = Enum.GetValues(typeof(UserType))
+                                          .Cast<UserType>()
+                                          .Where(type => type != UserType.GUEST);
             if (user != null)
             {
                 Title = "Edit user";
@@ -71,6 +72,7 @@ namespace HotelReservations.Windows
                 MessageBox.Show("Fill required fields.", "Validation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            contextUser.UserType = (UserType) UserTypesCB.SelectedItem;
             userService.SaveUser(contextUser);
             DialogResult = true;
 
@@ -79,6 +81,7 @@ namespace HotelReservations.Windows
 
         private void CancelBtn_Click(Object sender, RoutedEventArgs e)
         {
+            Close();
 
         }
     }

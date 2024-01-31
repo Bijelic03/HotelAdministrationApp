@@ -9,6 +9,8 @@ namespace HotelReservations.Repository
 {
     public class GuestRepository : IGuestRepository
     {
+
+        
         public List<Guest> GetAll()
         {
             try

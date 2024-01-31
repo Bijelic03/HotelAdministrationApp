@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,11 +42,22 @@ namespace HotelReservations.Service
                 Hotel.GetInstance().RoomTypes[index] = roomType;
             }
         }
-
-        public void DeleteRoomType(RoomType roomType)
+        public bool isRoomTypeUsed(RoomType roomType)
         {
-            var index = Hotel.GetInstance().RoomTypes.FindIndex(r => r.Id == roomType.Id);
-            Hotel.GetInstance().RoomTypes[index].IsActive = false;
+            return Hotel.GetInstance().Rooms.Exists(r => r.RoomType == roomType);
+
+        }
+        public bool DeleteRoomType(RoomType roomType)
+        {
+            if (!isRoomTypeUsed(roomType))
+            {
+                roomType.IsActive = false;
+                roomTypeRepository.Update(roomType);
+                var index = Hotel.GetInstance().RoomTypes.FindIndex(r => r.Id == roomType.Id);
+                Hotel.GetInstance().RoomTypes[index].IsActive = false;
+                return true;
+            }
+            else { return false; }
         }
 
 

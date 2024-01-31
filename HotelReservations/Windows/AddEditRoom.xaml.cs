@@ -22,7 +22,7 @@ namespace HotelReservations.Windows
     public partial class AddEditRoom : Window
     {
         private RoomService roomService;
-
+        private RoomTypeService roomTypeService;
         private Room contextRoom;
         public AddEditRoom(Room? room = null)
         {
@@ -36,6 +36,7 @@ namespace HotelReservations.Windows
             }
                       
             InitializeComponent();
+            roomTypeService = new RoomTypeService();
             roomService = new RoomService();
 
             AdjustWindow(room);
@@ -54,8 +55,7 @@ namespace HotelReservations.Windows
                 Title = "Add Room";
             }
 
-            // OVE PODATKE PREKO SERVISA, PLS
-            var roomTypes = Hotel.GetInstance().RoomTypes;
+            var roomTypes = roomTypeService.GetAllActiveRoomTypes();
             RoomTypesCB.ItemsSource = roomTypes;
 
 

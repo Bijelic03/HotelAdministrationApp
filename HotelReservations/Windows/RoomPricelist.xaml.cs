@@ -102,8 +102,14 @@ namespace HotelReservations.Windows
             {
 
                 // treba dodati proveru da ne moze da se obrise tip sobe koji se koristi u postojecim sobama)
-               // roomTypesService.DeleteRoomType(selectedRoomType);
-                FillData();
+                if (roomTypesService.DeleteRoomType(selectedRoomType))
+                {
+                    FillData();
+                }
+                else
+                {
+                    MessageBox.Show("This room type is being used", "Operation Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
